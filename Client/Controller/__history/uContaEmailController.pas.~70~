@@ -134,7 +134,7 @@ var
   objEmail: TEmailBase;
   Usuario: TUsuarioController;
   emails: TObjectList<TEmailBase>;
-  FormularioProcesso: TfrmProcesso;
+//  FormularioProcesso: TfrmProcesso;
 
 begin
   if AEnviarEmail = False then
@@ -145,7 +145,7 @@ begin
   objEmail := TEmail.Create;
   Usuario := TUsuarioController.Create;
   emails := TObjectList<TEmailBase>.Create();
-  FormularioProcesso := TfrmProcesso.Create(nil);
+//  FormularioProcesso := TfrmProcesso.Create(nil);
   try
     if AIdUsuario > 0 then
     begin
@@ -169,20 +169,29 @@ begin
       objEmail.Autenticar     := FAutenticar;
       objEmail.AutenticarSSL  := FAutenticarSSL;
 
+
+//      objEmail.Host           := 'smtp.gmail.com';
+//      objEmail.UserName       := 'irani.elodea70@gmail.com';
+//      objEmail.Password       := 'ielodea@70g';
+//      objEmail.MeuEmail       := 'irani.elodea70@gmail.com';
+//      objEmail.Destinatario   := 'iranielodea@hotmail.com';
+//      objEmail.Porta := 587;
+
+
       emails.Add(objEmail);
       GerarArquivo(emails);
 
-      if LowerCase(FHost.Trim) = 'smtp.gmail.com' then
-      begin
-        if AAviso = True then
-          FormularioProcesso.Mensagem('Aguarde, enviando email...');
-
-        objEmail.EnviarEmail();
-      end else
-      begin
-        emails.Add(objEmail);
-        GerarArquivo(emails);
-      end;
+//      if LowerCase(FHost.Trim) = 'smtp.gmail.com' then
+//      begin
+//        if AAviso = True then
+//          FormularioProcesso.Mensagem('Aguarde, enviando email...');
+//
+//        objEmail.EnviarEmail();
+//      end else
+//      begin
+//        emails.Add(objEmail);
+//        GerarArquivo(emails);
+//      end;
 
 
 //      objEmail.Porta          := 587; // FPorta;
@@ -206,10 +215,10 @@ begin
 
     end;
   finally
-    FreeAndNil(objEmail);
+//    FreeAndNil(objEmail);
     FreeAndNil(Usuario);
     emails.DisposeOf;
-    FreeAndNil(FormularioProcesso);
+//    FreeAndNil(FormularioProcesso);
   end;
 end;
 
@@ -353,6 +362,7 @@ begin
 
   Assign(arq, arquivoEmail);
   Rewrite(arq);
+
   try
       for email in AEmails do
       begin

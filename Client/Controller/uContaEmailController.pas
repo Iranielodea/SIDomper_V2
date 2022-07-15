@@ -134,7 +134,7 @@ var
   objEmail: TEmailBase;
   Usuario: TUsuarioController;
   emails: TObjectList<TEmailBase>;
-  FormularioProcesso: TfrmProcesso;
+//  FormularioProcesso: TfrmProcesso;
 
 begin
   if AEnviarEmail = False then
@@ -145,7 +145,7 @@ begin
   objEmail := TEmail.Create;
   Usuario := TUsuarioController.Create;
   emails := TObjectList<TEmailBase>.Create();
-  FormularioProcesso := TfrmProcesso.Create(nil);
+//  FormularioProcesso := TfrmProcesso.Create(nil);
   try
     if AIdUsuario > 0 then
     begin
@@ -215,10 +215,10 @@ begin
 
     end;
   finally
-    FreeAndNil(objEmail);
+//    FreeAndNil(objEmail);
     FreeAndNil(Usuario);
     emails.DisposeOf;
-    FreeAndNil(FormularioProcesso);
+//    FreeAndNil(FormularioProcesso);
   end;
 end;
 
@@ -362,6 +362,7 @@ begin
 
   Assign(arq, arquivoEmail);
   Rewrite(arq);
+
   try
       for email in AEmails do
       begin

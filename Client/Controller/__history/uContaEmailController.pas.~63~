@@ -169,20 +169,28 @@ begin
       objEmail.Autenticar     := FAutenticar;
       objEmail.AutenticarSSL  := FAutenticarSSL;
 
+
+//      objEmail.Host           := 'smtp.gmail.com';
+//      objEmail.UserName       := 'irani.elodea70@gmail.com';
+//      objEmail.Password       := 'ielodea@70g';
+//      objEmail.MeuEmail       := 'irani.elodea70@gmail.com';
+//      objEmail.Destinatario   := 'iranielodea@hotmail.com';
+//      objEmail.Porta := 587;
+
+
       emails.Add(objEmail);
       GerarArquivo(emails);
 
-
-//      if LowerCase(FHost) = 'smtp.office365.com' then
+//      if LowerCase(FHost.Trim) = 'smtp.gmail.com' then
 //      begin
-//        emails.Add(objEmail);
-//        GerarArquivo(emails);
-//      end
-//      else begin
 //        if AAviso = True then
 //          FormularioProcesso.Mensagem('Aguarde, enviando email...');
 //
 //        objEmail.EnviarEmail();
+//      end else
+//      begin
+//        emails.Add(objEmail);
+//        GerarArquivo(emails);
 //      end;
 
 
@@ -374,7 +382,7 @@ begin
     CloseFile(arq);
   end;
 
-//  ChamarAplicativoEmail();
+  ChamarAplicativoEmail();
 end;
 
 procedure TContaEmailController.Imprimir(IdUsuario: Integer);

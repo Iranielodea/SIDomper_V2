@@ -126,6 +126,39 @@ type
 
   TListaRelChamado = TObjectList<TRelChamadoVO>;
 
+  TChamadoTempoMedioVO = class
+  private
+    FNivel: Integer;
+    FTempo: Double;
+    FDataAbertura: TDate;
+    FDataOcorrencia: TDate;
+    FHoraAbertura: TTime;
+    FHoraOcorrencia: TTime;
+  public
+    property Nivel: Integer read FNivel write FNivel;
+    property Tempo: Double read FTempo write FTempo;
+    property DataAbertura: TDate read FDataAbertura write FDataAbertura;
+    property DataOcorrencia: TDate read FDataOcorrencia write FDataOcorrencia;
+    property HoraAbertura: TTime read FHoraAbertura write FHoraAbertura;
+    property HoraOcorrencia: TTime read FHoraOcorrencia write FHoraOcorrencia;
+  end;
+
+  TListaChamadoTempoMedio = TObjectList<TChamadoTempoMedioVO>;
+
+  TChamadoTempoMedioViewModel = class
+  private
+    FTempo: Double;
+    FNivel: Integer;
+    FTipo: Integer;
+  public
+    property Nivel: Integer read FNivel write FNivel;
+    property Tempo: Double read FTempo write FTempo;
+    property Tipo: Integer read FTipo write FTipo;
+  end;
+
+  TListaChamadoTempoMedioViewModel = TObjectList<TChamadoTempoMedioViewModel>;
+
+
 
 implementation
 

@@ -1,6 +1,6 @@
 //
 // Created by the DataSnap proxy generator.
-// 04/07/2022 21:17:37
+// 29/07/2022 22:23:37
 //
 
 unit uRegras;
@@ -47,6 +47,7 @@ type
     FChamadoQuadroCommand: TDBXCommand;
     FChamadoBuscarTotalHorasDoChamadoCommand: TDBXCommand;
     FChamadoQuadroJSONCommand: TDBXCommand;
+    FRetornarMediaInicioAtendimentoCommand: TDBXCommand;
     FFiltrarAtividadeCommand: TDBXCommand;
     FFiltrarAtividadeQuadro1Command: TDBXCommand;
     FFiltrarAtividadeQuadro2Command: TDBXCommand;
@@ -260,6 +261,7 @@ type
     procedure ChamadoQuadro(AIdUsuario: Integer; AIdRevenda: Integer);
     function ChamadoBuscarTotalHorasDoChamado(AIdChamado: Integer): Double;
     function ChamadoQuadroJSON(AIdUsuario: Integer; AIdRevenda: Integer): TJSONValue;
+    function RetornarMediaInicioAtendimento: TJSONValue;
     procedure FiltrarAtividade(Filtro: TJSONValue; Campo: string; Texto: string; IdUsuario: Integer; Contem: Boolean);
     procedure FiltrarAtividadeQuadro1(IdUsuario: Integer);
     procedure FiltrarAtividadeQuadro2(IdUsuario: Integer);
@@ -1156,6 +1158,19 @@ begin
   FChamadoQuadroJSONCommand.Parameters[1].Value.SetInt32(AIdRevenda);
   FChamadoQuadroJSONCommand.ExecuteUpdate;
   Result := TJSONValue(FChamadoQuadroJSONCommand.Parameters[2].Value.GetJSONValue(FInstanceOwner));
+end;
+
+function TServerMethods1Client.RetornarMediaInicioAtendimento: TJSONValue;
+begin
+  if FRetornarMediaInicioAtendimentoCommand = nil then
+  begin
+    FRetornarMediaInicioAtendimentoCommand := FDBXConnection.CreateCommand;
+    FRetornarMediaInicioAtendimentoCommand.CommandType := TDBXCommandTypes.DSServerMethod;
+    FRetornarMediaInicioAtendimentoCommand.Text := 'TServerMethods1.RetornarMediaInicioAtendimento';
+    FRetornarMediaInicioAtendimentoCommand.Prepare;
+  end;
+  FRetornarMediaInicioAtendimentoCommand.ExecuteUpdate;
+  Result := TJSONValue(FRetornarMediaInicioAtendimentoCommand.Parameters[0].Value.GetJSONValue(FInstanceOwner));
 end;
 
 procedure TServerMethods1Client.FiltrarAtividade(Filtro: TJSONValue; Campo: string; Texto: string; IdUsuario: Integer; Contem: Boolean);
@@ -3681,6 +3696,7 @@ begin
   FChamadoQuadroCommand.DisposeOf;
   FChamadoBuscarTotalHorasDoChamadoCommand.DisposeOf;
   FChamadoQuadroJSONCommand.DisposeOf;
+  FRetornarMediaInicioAtendimentoCommand.DisposeOf;
   FFiltrarAtividadeCommand.DisposeOf;
   FFiltrarAtividadeQuadro1Command.DisposeOf;
   FFiltrarAtividadeQuadro2Command.DisposeOf;

@@ -145,6 +145,8 @@ type
     procedure ChamadoAnexos(AIdChamado: integer);
     function BuscarTotalHorasDoChamado(AIdChamado: Integer): string;
 
+    function RetornarMediaAtendimentos: TObjectList<TChamadoTempoMedioViewModel>;
+
 
     property Model: TDMChamado read FModel write FModel;
     property ListaColaboradores: TObjectList<TChamadoColaboradorVO>
@@ -2491,6 +2493,25 @@ begin
       On E: Exception do
       begin
         TFuncoes.Excessao(E, 'TChamadoController.RetornarEmailsCliente');
+      end;
+    end;
+  finally
+    FreeAndNil(Negocio);
+  end;
+end;
+
+function TChamadoController.RetornarMediaAtendimentos: TObjectList<TChamadoTempoMedioViewModel>;
+var
+  Negocio: TServerMethods1Client;
+begin
+  Negocio := TServerMethods1Client.Create(DM.Conexao.DBXConnection);
+  try
+    try
+      Result := TConverte.JSONToObject<TListaChamadoTempoMedioViewModel>(Negocio.RetornarMediaInicioAtendimento());
+    except
+      On E: Exception do
+      begin
+        TFuncoes.Excessao(E, 'TChamadoController.RetornarMediaAtendimentos');
       end;
     end;
   finally

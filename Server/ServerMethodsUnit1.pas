@@ -861,6 +861,7 @@ type
     procedure ChamadoQuadro(AIdUsuario, AIdRevenda: Integer);
     function ChamadoBuscarTotalHorasDoChamado(AIdChamado: Integer): Double;
     function ChamadoQuadroJSON(AIdUsuario, AIdRevenda: Integer): TJSONValue;
+    function RetornarMediaInicioAtendimento: TJSONValue;
 //------------------------------------------------------------------------------
 // Atividades
 //------------------------------------------------------------------------------
@@ -1262,7 +1263,6 @@ begin
         raise Exception.Create('AtividadeQuadroJson' + sLineBreak + E.Message);
       end;
     end;
-
     Lista := obj.ListarQuadro(QAtividadeQuadro);
 
     QChamadoQuadro.Close;
@@ -5331,6 +5331,55 @@ begin
     Result := obj.RetornaEmails(IdChamado, IdUsuario, IdStatus);
   finally
     FreeAndNil(obj);
+  end;
+end;
+
+function TServerMethods1.RetornarMediaInicioAtendimento: TJSONValue;
+var
+  chamado: TChamado;
+  lista: TObjectList<TChamadoTempoMedioVO>;
+  listaView: TObjectList<TChamadoTempoMedioViewModel>;
+  itemView: TChamadoTempoMedioViewModel;
+  item: TChamadoTempoMedioVO;
+begin
+  lista := TObjectList<TChamadoTempoMedioVO>.Create();
+  listaView := TObjectList<TChamadoTempoMedioViewModel>.Create;
+  chamado := TChamado.Create;
+  try
+    try
+      // calcula tempo medio para o inicio do atendimento
+      chamado.CalcularTempoMedioAtendimento(lista);
+      for item in lista do
+      begin
+        itemView := TChamadoTempoMedioViewModel.Create;
+        itemView.Nivel := item.Nivel;
+        itemView.Tempo := item.Tempo;
+        itemView.Tipo  := 1;
+        listaView.Add(itemView);
+      end;
+
+      // calcula tempo medio em atendimento
+      lista.Clear;
+      chamado.CalcularTempoMedioEmAtendimento(lista);
+
+      for item in lista do
+      begin
+        itemView := TChamadoTempoMedioViewModel.Create;
+        itemView.Nivel := item.Nivel;
+        itemView.Tempo := item.Tempo;
+        itemView.Tipo  := 2;
+        listaView.Add(itemView);
+      end;
+
+      Result := TConverte.ObjectToJSON<TListaChamadoTempoMedioViewModel>(listaView);
+    except On E: Exception do
+      begin
+        raise Exception.Create(E.Message);
+      end;
+    end;
+  finally
+    chamado.DisposeOf;
+    lista.DisposeOf;
   end;
 end;
 

@@ -9,7 +9,7 @@ uses
   uChamadoController, Vcl.Mask, Vcl.DBCtrls, uFuncoesSIDomper, Vcl.OleCtnrs, uFraCliente,
   uFraUsuario, uFraTipo, uFraStatus, uEnumerador, uFraRevenda, uClienteController,
   uUsuarioController, uEmailChamado, Vcl.Menus, uFraModulo, uFraAnalista, uFiltroChamado,
-  uFraColaborador, uAgendamentoController, uPermissaoChamadoVO;
+  uFraColaborador, uAgendamentoController, uPermissaoChamadoVO, System.Generics.Collections, uChamadoVO;
 
 type
   TfrmChamado = class(TfrmBaseCadastro)

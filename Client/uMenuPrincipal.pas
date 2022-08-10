@@ -9,7 +9,7 @@ uses
   uEstiloTelas, uConfig, uOrcamentoController, uTelaAbertura, uRamal,
   uListaRamal, uRamalController, System.Generics.Collections, uRecado,
   uRecadoController, uEscala, uImportarClientesController, uFeriado, uUsuarioPermissaoController,
-  uCategoria, uTabPreco, uRecadoVO;
+  uCategoria, uTabPreco, uRecadoVO, uDashboardChamados;
 
 type
   TfrmMenuPrincipal = class(TForm)
@@ -77,6 +77,7 @@ type
     mmFeriado: TMenuItem;
     Categorias1: TMenuItem;
     mmTabPreco: TMenuItem;
+    DashboardChamados1: TMenuItem;
     procedure btnBaseClick(Sender: TObject);
     procedure btnChamadoClick(Sender: TObject);
     procedure mmRevendasClick(Sender: TObject);
@@ -123,6 +124,7 @@ type
     procedure mmFeriadoClick(Sender: TObject);
     procedure Categorias1Click(Sender: TObject);
     procedure mmTabPrecoClick(Sender: TObject);
+    procedure DashboardChamados1Click(Sender: TObject);
   private
     { Private declarations }
     FLogou: Boolean;
@@ -278,7 +280,6 @@ end;
 
 procedure TfrmMenuPrincipal.btnChamadoClick(Sender: TObject);
 begin
-
   if not (TFuncoes.FormularioEstaCriado(TfrmChamado)) then
     TFuncoes.CriarFormulario(TfrmChamado.create(False, False, caChamado));
 end;
@@ -333,6 +334,14 @@ procedure TfrmMenuPrincipal.Categorias1Click(Sender: TObject);
 begin
   if not (TFuncoes.FormularioEstaCriado(TfrmCategoria)) then
     TFuncoes.CriarFormulario(TfrmCategoria.create());
+end;
+
+procedure TfrmMenuPrincipal.DashboardChamados1Click(Sender: TObject);
+var
+  formulario: TfrmDashboardChamados;
+begin
+  formulario := TfrmDashboardChamados.Create(Self);
+  formulario.Show;
 end;
 
 procedure TfrmMenuPrincipal.EnviarEmail;

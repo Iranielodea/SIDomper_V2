@@ -267,7 +267,8 @@ uses
   uDMTabPreco in 'Model\uDMTabPreco.pas' {DMTabPreco: TDataModule},
   uProduto in 'View\uProduto.pas' {frmProduto},
   uListaProblemaSolicitacao in 'View\uListaProblemaSolicitacao.pas' {frmListaProblemaSolicitacao},
-  uQuadroController in 'Controller\uQuadroController.pas';
+  uQuadroController in 'Controller\uQuadroController.pas',
+  uDashboardChamados in 'View\uDashboardChamados.pas' {frmDashboardChamados};
 
 {$R *.res}
 

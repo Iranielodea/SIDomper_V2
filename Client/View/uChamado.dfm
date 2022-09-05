@@ -11,6 +11,7 @@
   inherited pgControl: TPageControl
     Width = 1018
     Height = 671
+    ActivePage = tsFiltro
     ExplicitWidth = 1018
     ExplicitHeight = 671
     inherited tsPesquisa: TTabSheet
@@ -193,7 +194,7 @@
           Top = 1
           Width = 1008
           Height = 599
-          ActivePage = tsChamadoOcorrencia
+          ActivePage = tsPrincipal
           Align = alClient
           TabOrder = 0
           OnChange = PageControl1Change

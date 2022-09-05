@@ -1785,6 +1785,7 @@ begin
   try
     oFiltro := TFiltroOrcamento(UnMarshal.Unmarshal(Filtro));
 
+
     QOrcamentoCons.Close;
     sComando := obj.Filtrar(oFiltro, Campo, Texto, IdUsuario, Contem);
     QOrcamentoCons.SQL.Text := sComando;

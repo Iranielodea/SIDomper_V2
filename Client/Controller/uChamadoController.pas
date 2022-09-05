@@ -145,7 +145,7 @@ type
     procedure ChamadoAnexos(AIdChamado: integer);
     function BuscarTotalHorasDoChamado(AIdChamado: Integer): string;
 
-    function RetornarMediaAtendimentos: TObjectList<TChamadoTempoMedioViewModel>;
+    function RetornarMediaAtendimentos(AData: TDate): TObjectList<TChamadoTempoMedioViewModel>;
 
 
     property Model: TDMChamado read FModel write FModel;
@@ -2500,14 +2500,14 @@ begin
   end;
 end;
 
-function TChamadoController.RetornarMediaAtendimentos: TObjectList<TChamadoTempoMedioViewModel>;
+function TChamadoController.RetornarMediaAtendimentos(AData: TDate): TObjectList<TChamadoTempoMedioViewModel>;
 var
   Negocio: TServerMethods1Client;
 begin
   Negocio := TServerMethods1Client.Create(DM.Conexao.DBXConnection);
   try
     try
-      Result := TConverte.JSONToObject<TListaChamadoTempoMedioViewModel>(Negocio.RetornarMediaInicioAtendimento());
+      Result := TConverte.JSONToObject<TListaChamadoTempoMedioViewModel>(Negocio.RetornarMediaInicioAtendimento(DateToStr(AData)));
     except
       On E: Exception do
       begin

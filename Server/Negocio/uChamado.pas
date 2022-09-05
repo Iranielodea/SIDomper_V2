@@ -40,10 +40,14 @@ type
   TChamadoTemp = class
   private
     FNivel: Integer;
-    FQtde: Double;
+    FQtdeChamados: Double;
+    FQtdeHoras: Double;
+    FPerfil: string;
   public
+    property Perfil: string read FPerfil write FPerfil;
     property Nivel: Integer read FNivel write FNivel;
-    property Qtde: Double read FQtde write FQtde;
+    property QtdeChamados: Double read FQtdeChamados write FQtdeChamados;
+    property QtdeHoras: Double read FQtdeHoras write FQtdeHoras;
   end;
 
   TChamado = class(TInterfacedObject, ICadastroInterface)
@@ -68,8 +72,8 @@ type
     function SqlDouble(AValor: Double): string;
     function RetornarSQLQuadro(AIdUsuario, AIdRevenda, AParCodigo: Integer; ACampoQuadro: string; ATipo: TEnumChamadoAtividade): string;
 
-    procedure BuscarTempoAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>);
-    procedure BuscarTempoEmAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>);
+    procedure BuscarTempoAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
+    procedure BuscarTempoEmAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
   public
     procedure Novo(APrograma, AIdUsuario: Integer);
     procedure Excluir(APrograma, AIdUsuario, AId: Integer);
@@ -127,8 +131,8 @@ type
     function RelatorioModelo_09(AFiltro: TFiltroChamado; AIdUsuario: integer; Ordem:
         string; ATipo: TEnumChamadoAtividade): string;
 
-    procedure CalcularTempoMedioAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>);
-    procedure CalcularTempoMedioEmAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>);
+    procedure CalcularTempoMedioAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
+    procedure CalcularTempoMedioEmAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
 
   end;
 
@@ -233,33 +237,42 @@ begin
 end;
 
 procedure TChamado.BuscarTempoEmAtendimento(
-  AModel: TObjectList<TChamadoTempoMedioVO>);
+  AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
 var
   item: TChamadoTempoMedioVO;
   obj: TFireDAC;
   sb: TStringBuilder;
+  data: string;
 begin
+  data := FormatDateTime('yyyy-mm-dd', AData);
 
   obj := TFireDAC.create;
   sb := TStringBuilder.Create;
   try
     sb.AppendLine('SELECT');
     sb.AppendLine('	Cha_Nivel,');
+    sb.AppendLine('	Cli_Perfil,');
     sb.AppendLine('	(');
     sb.AppendLine('		SELECT SUM(ChOco_TotalHoras) FROM Chamado_Ocorrencia');
     sb.AppendLine('			WHERE Cha_Id = ChOco_Chamado');
     sb.AppendLine('	) as Total_Horas');
     sb.AppendLine('FROM Chamado');
-    sb.AppendLine('	INNER JOIN Status ON Cha_Status = Sta_Id');
-    sb.AppendLine('WHERE Cha_Status = 2');
-    sb.AppendLine('AND Sta_Programa = 1');
-    sb.AppendLine('ORDER BY Cha_Nivel;');
+    sb.AppendLine('	  INNER JOIN Cliente ON Cha_Cliente = Cli_Id');
+//    sb.AppendLine('	INNER JOIN Status ON Cha_Status = Sta_Id');
+//    sb.AppendLine('WHERE Cha_Status = 2');
+//    sb.AppendLine('AND Sta_Programa = 1');
+    sb.AppendLine('WHERE Cha_TipoMovimento = 1');
+    sb.AppendLine('AND TRIM(Cli_Perfil) <> ''''');
+    sb.AppendLine('AND Cha_DataAbertura = ' + QuotedStr(data));
+
+    sb.AppendLine('ORDER BY Cli_Perfil');
     obj.OpenSQL(sb.ToString);
 
     while not obj.Model.Eof do
     begin
       item := TChamadoTempoMedioVO.Create;
-      item.Nivel := obj.Model.FieldByName('Cha_Nivel').AsInteger;
+      item.Perfil := obj.Model.FieldByName('Cli_Perfil').AsString;
+//      item.Nivel := obj.Model.FieldByName('Cha_Nivel').AsInteger;
       item.Tempo := obj.Model.FieldByName('Total_Horas').AsFloat;
       AModel.Add(item);
       obj.Model.Next;
@@ -284,57 +297,56 @@ begin
 end;
 
 procedure TChamado.BuscarTempoAtendimento(
-  AModel: TObjectList<TChamadoTempoMedioVO>);
+  AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
 var
   item: TChamadoTempoMedioVO;
   sb: TStringBuilder;
   obj: TFireDAC;
   HoraInicial: Double;
   HoraFinal: Double;
+  data: string;
 begin
+  data := FormatDateTime('yyyy-mm-dd', AData);
   obj := TFireDAC.create;
   sb := TStringBuilder.Create;
   try
     sb.AppendLine('SELECT');
-    sb.AppendLine('	Cha_Nivel,');
     sb.AppendLine('	Cha_Id,');
-    sb.AppendLine('	Cha_DataAbertura,');
+    sb.AppendLine('	Cli_Perfil,');
     sb.AppendLine('	Cha_HoraAbertura AS Hora_Abertura,');
-    sb.AppendLine('	(');
-    sb.AppendLine('		SELECT MIN(ChOco_HoraInicio) FROM Chamado_Ocorrencia');
-    sb.AppendLine('			WHERE Cha_Id = ChOco_Chamado');
-    sb.AppendLine('	) as Hora_Ocorrencia,');
-
-    sb.AppendLine('	(');
-    sb.AppendLine('		SELECT MIN(ChOco_Data) FROM Chamado_Ocorrencia');
-    sb.AppendLine('			WHERE Cha_Id = ChOco_Chamado');
-    sb.AppendLine('	) as Data_Ocorrencia');
-
+    sb.AppendLine('	Cha_HoraAtendeAtual AS Hora_Ocorrencia');
     sb.AppendLine('FROM Chamado');
-    sb.AppendLine('	INNER JOIN Status ON Cha_Status = Sta_Id');
-    sb.AppendLine('WHERE Cha_Status = 2');
-    sb.AppendLine('AND Sta_Programa = 1');
-    sb.AppendLine('AND Cha_Id IN (');
-    sb.AppendLine('	SELECT ChOco_Chamado FROM Chamado_Ocorrencia');
-    sb.AppendLine('		WHERE Cha_Id = ChOco_Chamado');
-    sb.AppendLine(')');
-    sb.AppendLine('AND Cha_DataAbertura in (');
-    sb.AppendLine('	SELECT ChOco_Data FROM Chamado_Ocorrencia');
-    sb.AppendLine('		WHERE Cha_DataAbertura = ChOco_Data');
-    sb.AppendLine(')');
+    sb.AppendLine('	  INNER JOIN Cliente ON Cha_Cliente = Cli_Id');
+    sb.AppendLine('WHERE Cha_TipoMovimento = 1');
+    sb.AppendLine('AND Cha_DataAbertura = ' + QuotedStr(data));
+    sb.AppendLine('AND TRIM(Cli_Perfil) <> ''''');
+    sb.AppendLine('ORDER BY Cli_Perfil');
 
-    sb.AppendLine('ORDER BY Cha_Nivel');
+//    sb.AppendLine('SELECT');
+//    sb.AppendLine('	Cha_Nivel,');
+//    sb.AppendLine('	Cha_Id,');
+//    sb.AppendLine('	Cha_DataAbertura,');
+//    sb.AppendLine('	Cha_HoraAbertura AS Hora_Abertura,');
+//    sb.AppendLine('	Cha_HoraAtendeAtual AS Hora_Ocorrencia');
+//    sb.AppendLine('FROM Chamado');
+//    sb.AppendLine('WHERE Cha_DataAbertura = ' + QuotedStr(data));
+
+
+//    sb.AppendLine('ORDER BY Cha_Nivel');
 
     obj.OpenSQL(sb.ToString);
 
     while not obj.Model.Eof do
     begin
       item := TChamadoTempoMedioVO.Create;
-      item.Nivel := obj.Model.FieldByName('Cha_Nivel').AsInteger;
+      item.Perfil := obj.Model.FieldByName('Cli_Perfil').AsString;
+      //item.Nivel := obj.Model.FieldByName('Cha_Nivel').AsInteger;
       item.HoraAbertura := obj.Model.FieldByName('Hora_Abertura').AsDateTime;
-      item.HoraOcorrencia := obj.Model.FieldByName('Hora_Ocorrencia').AsDateTime;
+      item.HoraOcorrencia := obj.Model.FieldByName('Hora_Ocorrencia').AsDateTime; // obj.Model.FieldByName('Hora_Ocorrencia').AsDateTime;
+//      item.HoraOcorrencia := StrToTime('16:00');
 
       HoraInicial := TFuncoes.HoraToDecimal(TimeToStr(item.HoraAbertura));
+
       HoraFinal := TFuncoes.HoraToDecimal(TimeToStr(item.HoraOcorrencia));
 
       item.Tempo := HoraFinal - HoraInicial;
@@ -347,44 +359,53 @@ begin
   end;
 end;
 
-procedure TChamado.CalcularTempoMedioAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>);
+procedure TChamado.CalcularTempoMedioAtendimento(AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
 var
   listaTemp: TObjectList<TChamadoTemp>;
   itemTemp: TChamadoTemp;
 
-  qtdeChamados: Integer;
   item: TChamadoTempoMedioVO;
-  totalHoras: Double;
   i: Integer;
+  index: Integer;
 begin
-  BuscarTempoAtendimento(AModel);
+
+  BuscarTempoAtendimento(AModel, AData);
 
   listaTemp := TObjectList<TChamadoTemp>.Create();
   try
-    totalHoras := 0;
-    for item in AModel do
-      totalHoras := totalHoras + item.Tempo;
-
     for item in AModel do
     begin
+      index := -1;
       if listaTemp.Count = 0 then
       begin
         itemTemp := TChamadoTemp.Create;
-        itemTemp.Nivel  := item.Nivel;
-        itemTemp.Qtde   := 1;
+        itemTemp.Perfil := item.Perfil;
+        itemTemp.QtdeChamados   := 1;
+        itemTemp.QtdeHoras := item.Tempo;
         listaTemp.Add(itemTemp);
       end
       else begin
         for I := 0 to listaTemp.Count -1 do
         begin
-          if item.Nivel = listaTemp[i].Nivel then
-            listaTemp[i].Qtde := listaTemp[i].Qtde + 1
-          else begin
-            itemTemp := TChamadoTemp.Create;
-            itemTemp.Nivel := item.Nivel;
-            itemTemp.Qtde := 1;
-            listaTemp.Add(itemTemp);
+          if item.Perfil = listaTemp[i].Perfil then
+          begin
+            index := i;
+            Break;
           end;
+        end;
+
+        if index > -1 then
+        begin
+          listaTemp[index].QtdeChamados := listaTemp[index].QtdeChamados + 1;
+          listaTemp[index].QtdeHoras := listaTemp[index].QtdeHoras + item.Tempo;
+
+        end
+        else begin
+          itemTemp := TChamadoTemp.Create;
+          itemTemp.Perfil := item.Perfil;
+          itemTemp.QtdeChamados := 1;
+          itemTemp.QtdeHoras := item.Tempo;
+          listaTemp.Add(itemTemp);
         end;
       end;
     end;
@@ -395,8 +416,14 @@ begin
       for itemTemp in listaTemp do
       begin
         item := TChamadoTempoMedioVO.Create;
-        item.Nivel := itemTemp.Nivel;
-        item.Tempo := itemTemp.Qtde / totalHoras;
+        item.Perfil := itemTemp.Perfil;
+        item.QtdeChamados := itemTemp.QtdeChamados;
+
+        item.Tempo := itemTemp.QtdeHoras / itemTemp.QtdeChamados;
+
+        if item.Tempo < 0 then
+          item.Tempo := 0;
+
         AModel.Add(item);
       end;
     end;
@@ -413,37 +440,33 @@ begin
 end;
 
 procedure TChamado.CalcularTempoMedioEmAtendimento(
-  AModel: TObjectList<TChamadoTempoMedioVO>);
+  AModel: TObjectList<TChamadoTempoMedioVO>; AData: TDate);
 var
-  totalHoras: Double;
   item: TChamadoTempoMedioVO;
   listaTemp: TObjectList<TChamadoTemp>;
   itemTemp: TChamadoTemp;
   i: Integer;
   index: Integer;
 begin
-  BuscarTempoEmAtendimento(AModel);
+  BuscarTempoEmAtendimento(AModel, AData);
 
   listaTemp := TObjectList<TChamadoTemp>.Create();
   try
-    totalHoras := 0;
-    for item in AModel do
-      totalHoras := totalHoras + item.Tempo;
-
     for item in AModel do
     begin
       index := -1;
       if listaTemp.Count = 0 then
       begin
         itemTemp := TChamadoTemp.Create;
-        itemTemp.Nivel  := item.Nivel;
-        itemTemp.Qtde   := 1;
+        itemTemp.Perfil  := item.Perfil;
+        itemTemp.QtdeChamados   := 1;
+        itemTemp.QtdeHoras := item.Tempo;
         listaTemp.Add(itemTemp);
       end
       else begin
         for I := 0 to listaTemp.Count -1 do
         begin
-          if item.Nivel = listaTemp[i].Nivel then
+          if item.Perfil = listaTemp[i].Perfil then
           begin
             index := i;
             Break;
@@ -451,11 +474,12 @@ begin
         end;
 
         if index > -1 then
-          listaTemp[index].Qtde := listaTemp[index].Qtde + 1
+          listaTemp[index].QtdeChamados := listaTemp[index].QtdeChamados + 1
         else begin
           itemTemp := TChamadoTemp.Create;
-          itemTemp.Nivel := item.Nivel;
-          itemTemp.Qtde := 1;
+          itemTemp.Perfil := item.Perfil;
+          itemTemp.QtdeChamados := 1;
+          itemTemp.QtdeHoras := item.Tempo;
           listaTemp.Add(itemTemp);
         end;
       end;
@@ -467,8 +491,13 @@ begin
       for itemTemp in listaTemp do
       begin
         item := TChamadoTempoMedioVO.Create;
-        item.Nivel := itemTemp.Nivel;
-        item.Tempo := itemTemp.Qtde / totalHoras;
+        item.Perfil := itemTemp.Perfil;
+        item.QtdeChamados := itemTemp.QtdeChamados;
+        item.Tempo := itemTemp.QtdeHoras / itemTemp.QtdeChamados;
+
+        if item.Tempo < 0 then
+          item.Tempo := 0;
+
         AModel.Add(item);
       end;
     end;

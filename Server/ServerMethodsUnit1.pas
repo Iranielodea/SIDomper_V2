@@ -861,7 +861,7 @@ type
     procedure ChamadoQuadro(AIdUsuario, AIdRevenda: Integer);
     function ChamadoBuscarTotalHorasDoChamado(AIdChamado: Integer): Double;
     function ChamadoQuadroJSON(AIdUsuario, AIdRevenda: Integer): TJSONValue;
-    function RetornarMediaInicioAtendimento: TJSONValue;
+    function RetornarMediaInicioAtendimento(AData: string): TJSONValue;
 //------------------------------------------------------------------------------
 // Atividades
 //------------------------------------------------------------------------------
@@ -5334,7 +5334,7 @@ begin
   end;
 end;
 
-function TServerMethods1.RetornarMediaInicioAtendimento: TJSONValue;
+function TServerMethods1.RetornarMediaInicioAtendimento(AData: string): TJSONValue;
 var
   chamado: TChamado;
   lista: TObjectList<TChamadoTempoMedioVO>;
@@ -5342,17 +5342,20 @@ var
   itemView: TChamadoTempoMedioViewModel;
   item: TChamadoTempoMedioVO;
 begin
+
   lista := TObjectList<TChamadoTempoMedioVO>.Create();
   listaView := TObjectList<TChamadoTempoMedioViewModel>.Create;
   chamado := TChamado.Create;
   try
     try
       // calcula tempo medio para o inicio do atendimento
-      chamado.CalcularTempoMedioAtendimento(lista);
+      chamado.CalcularTempoMedioAtendimento(lista, StrToDate(AData));
       for item in lista do
       begin
         itemView := TChamadoTempoMedioViewModel.Create;
+        itemView.Perfil := item.Perfil;
         itemView.Nivel := item.Nivel;
+        itemView.QtdeChamados := item.QtdeChamados;
         itemView.Tempo := item.Tempo;
         itemView.Tipo  := 1;
         listaView.Add(itemView);
@@ -5360,13 +5363,14 @@ begin
 
       // calcula tempo medio em atendimento
       lista.Clear;
-      chamado.CalcularTempoMedioEmAtendimento(lista);
+      chamado.CalcularTempoMedioEmAtendimento(lista, StrToDate(AData));
 
       for item in lista do
       begin
         itemView := TChamadoTempoMedioViewModel.Create;
-        itemView.Nivel := item.Nivel;
+        itemView.Perfil := item.Perfil;
         itemView.Tempo := item.Tempo;
+        itemView.QtdeChamados := item.QtdeChamados;
         itemView.Tipo  := 2;
         listaView.Add(itemView);
       end;
@@ -5380,6 +5384,7 @@ begin
   finally
     chamado.DisposeOf;
     lista.DisposeOf;
+    listaView.DisposeOf;
   end;
 end;
 

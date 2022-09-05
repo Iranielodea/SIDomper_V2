@@ -8,7 +8,7 @@ uses
   uOrcamentoItemModuloVO, uOrcamentoOcorrenciaVO, System.Variants, System.Generics.Collections,
   uFormaPagtoItemVO, uFormaPagtoVO, uGenericDAO, uOrcamentoEmailVO,
   uClassValidacao, uFireDAC, uDepartamento, uDepartamentoEmailVO, uContaEmail,
-  uContaEmailVO, uInscricaoEstadual, uContatoVO, uContato;
+  uContaEmailVO, uInscricaoEstadual, uContatoVO, uContato, uUsuarioVO;
 
   const CConsulta: string =
   'SELECT ' +
@@ -540,8 +540,8 @@ begin
   sConsulta := CConsulta + Filtro(AFiltro, AIdUsuario);
   sConsulta := sConsulta + ' AND ' + ACampo + ' LIKE ' + sTexto;
 
-  if not objUsuario.PermissaoOrcamentoUsuario(AIdUsuario) then
-    sConsulta := sConsulta + ' AND Orc_Usuario = ' + IntToStr(AIdUsuario);
+//  if not objUsuario.PermissaoOrcamentoUsuario(AIdUsuario) then
+//    sConsulta := sConsulta + ' AND Orc_Usuario = ' + IntToStr(AIdUsuario);
 
   FreeAndNil(objUsuario);
 
@@ -557,16 +557,19 @@ function TOrcamento.Filtro(AFiltro: TFiltroOrcamento; AIdUsuario: Integer): stri
 var
   InstrucaoSQL: string;
   Usuario: TUsuario;
+  UsuarioVO: TUsuarioVO;
   bPermissao: Boolean;
 begin
   InstrucaoSQL := '	WHERE Orc_Id >= 0';
 
   Usuario := TUsuario.Create;
   try
-    InstrucaoSQL := InstrucaoSQL +  Usuario.RetornaPermissaoUsuarioDepartamento(AIdUsuario);
+    //InstrucaoSQL := InstrucaoSQL +  Usuario.RetornaPermissaoUsuarioDepartamento(AIdUsuario);
     bPermissao := Usuario.PermissaoOrcamentoUsuario(AIdUsuario);
+    UsuarioVO := Usuario.LocalizarId(AIdUsuario);
   finally
     FreeAndNil(Usuario);
+    UsuarioVO.DisposeOf;
   end;
 
   if AFiltro.DataInicial.Trim <> DataEmBranco then
@@ -608,8 +611,16 @@ begin
   if AFiltro.Cliente.IdCidade <> '' then
     InstrucaoSQL := InstrucaoSQL + ' AND Orc_Cidade in ' + AFiltro.Cliente.IdCidade;
 
+  if UsuarioVO.IdRevenda > 0 then
+    InstrucaoSQL := InstrucaoSQL + ' AND Usu_Revenda = ' + IntToStr(UsuarioVO.IdRevenda);
+
   if not (bPermissao) then
     InstrucaoSQL := InstrucaoSQL + ' AND Orc_Usuario = ' + IntToStr(AIdUsuario);
+
+//	-- se tiver parametro e revenda (mostrar todos da revenda)
+//	-- se nao tiver parametro e tem revenda = mostrar só do usuario
+//	-- se tiver parametro e nao revenda mostrar geral
+
 
 
   Result := InstrucaoSQL;

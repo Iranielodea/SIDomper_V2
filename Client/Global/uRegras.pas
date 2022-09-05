@@ -1,6 +1,6 @@
 //
 // Created by the DataSnap proxy generator.
-// 29/07/2022 22:23:37
+// 17/08/2022 18:47:19
 //
 
 unit uRegras;
@@ -261,7 +261,7 @@ type
     procedure ChamadoQuadro(AIdUsuario: Integer; AIdRevenda: Integer);
     function ChamadoBuscarTotalHorasDoChamado(AIdChamado: Integer): Double;
     function ChamadoQuadroJSON(AIdUsuario: Integer; AIdRevenda: Integer): TJSONValue;
-    function RetornarMediaInicioAtendimento: TJSONValue;
+    function RetornarMediaInicioAtendimento(AData: string): TJSONValue;
     procedure FiltrarAtividade(Filtro: TJSONValue; Campo: string; Texto: string; IdUsuario: Integer; Contem: Boolean);
     procedure FiltrarAtividadeQuadro1(IdUsuario: Integer);
     procedure FiltrarAtividadeQuadro2(IdUsuario: Integer);
@@ -1160,7 +1160,7 @@ begin
   Result := TJSONValue(FChamadoQuadroJSONCommand.Parameters[2].Value.GetJSONValue(FInstanceOwner));
 end;
 
-function TServerMethods1Client.RetornarMediaInicioAtendimento: TJSONValue;
+function TServerMethods1Client.RetornarMediaInicioAtendimento(AData: string): TJSONValue;
 begin
   if FRetornarMediaInicioAtendimentoCommand = nil then
   begin
@@ -1169,8 +1169,9 @@ begin
     FRetornarMediaInicioAtendimentoCommand.Text := 'TServerMethods1.RetornarMediaInicioAtendimento';
     FRetornarMediaInicioAtendimentoCommand.Prepare;
   end;
+  FRetornarMediaInicioAtendimentoCommand.Parameters[0].Value.SetWideString(AData);
   FRetornarMediaInicioAtendimentoCommand.ExecuteUpdate;
-  Result := TJSONValue(FRetornarMediaInicioAtendimentoCommand.Parameters[0].Value.GetJSONValue(FInstanceOwner));
+  Result := TJSONValue(FRetornarMediaInicioAtendimentoCommand.Parameters[1].Value.GetJSONValue(FInstanceOwner));
 end;
 
 procedure TServerMethods1Client.FiltrarAtividade(Filtro: TJSONValue; Campo: string; Texto: string; IdUsuario: Integer; Contem: Boolean);

@@ -10,18 +10,21 @@ object frmDashboardChamados: TfrmDashboardChamados
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   WindowState = wsMaximized
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
-    Top = 0
+    Top = 41
     Width = 1278
-    Height = 760
+    Height = 719
     ActivePage = ts1
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -31,7 +34,6 @@ object frmDashboardChamados: TfrmDashboardChamados
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 1069
     object ts1: TTabSheet
       Caption = 'Atendimentos'
       Font.Charset = DEFAULT_CHARSET
@@ -40,10 +42,6 @@ object frmDashboardChamados: TfrmDashboardChamados
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ExplicitLeft = 8
-      ExplicitTop = 22
-      ExplicitWidth = 1061
-      ExplicitHeight = 686
       object Panel2: TPanel
         Left = 0
         Top = 0
@@ -58,7 +56,6 @@ object frmDashboardChamados: TfrmDashboardChamados
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 1061
         object Chart1: TChart
           Left = 1
           Top = 1
@@ -122,8 +119,6 @@ object frmDashboardChamados: TfrmDashboardChamados
           BevelWidth = 2
           Color = clWhite
           TabOrder = 0
-          ExplicitLeft = -4
-          ExplicitHeight = 327
           DefaultCanvas = 'TGDIPlusCanvas'
           PrintMargins = (
             15
@@ -161,8 +156,6 @@ object frmDashboardChamados: TfrmDashboardChamados
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          ExplicitWidth = 659
-          ExplicitHeight = 327
           object Panel4: TPanel
             Left = 1
             Top = 249
@@ -177,8 +170,6 @@ object frmDashboardChamados: TfrmDashboardChamados
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitLeft = 6
-            ExplicitTop = 247
             object Label1: TLabel
               Left = 32
               Top = 24
@@ -247,7 +238,7 @@ object frmDashboardChamados: TfrmDashboardChamados
             DataSource = dsChamado
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -48
+            Font.Height = -37
             Font.Name = 'Tahoma'
             Font.Style = []
             Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -262,14 +253,8 @@ object frmDashboardChamados: TfrmDashboardChamados
               item
                 Alignment = taCenter
                 Expanded = False
-                FieldName = 'Nivel'
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -48
-                Font.Name = 'Tahoma'
-                Font.Style = []
+                FieldName = 'Perfil'
                 Title.Alignment = taCenter
-                Title.Caption = 'N'#237'vel'
                 Title.Font.Charset = DEFAULT_CHARSET
                 Title.Font.Color = clWindowText
                 Title.Font.Height = -27
@@ -281,12 +266,20 @@ object frmDashboardChamados: TfrmDashboardChamados
               item
                 Alignment = taCenter
                 Expanded = False
+                FieldName = 'QtdeChamados'
+                Title.Alignment = taCenter
+                Title.Caption = 'Quantidade'
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWindowText
+                Title.Font.Height = -27
+                Title.Font.Name = 'Tahoma'
+                Title.Font.Style = []
+                Visible = True
+              end
+              item
+                Alignment = taCenter
+                Expanded = False
                 FieldName = 'Horas'
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -48
-                Font.Name = 'Tahoma'
-                Font.Style = []
                 Title.Alignment = taCenter
                 Title.Font.Charset = DEFAULT_CHARSET
                 Title.Font.Color = clWindowText
@@ -303,7 +296,7 @@ object frmDashboardChamados: TfrmDashboardChamados
         Left = 0
         Top = 323
         Width = 1270
-        Height = 409
+        Height = 368
         Align = alClient
         BevelOuter = bvLowered
         Font.Charset = DEFAULT_CHARSET
@@ -313,22 +306,17 @@ object frmDashboardChamados: TfrmDashboardChamados
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        ExplicitTop = 0
-        ExplicitWidth = 1061
-        ExplicitHeight = 321
         object Panel6: TPanel
           Left = 401
           Top = 1
           Width = 868
-          Height = 407
+          Height = 366
           Align = alClient
           BevelOuter = bvLowered
           TabOrder = 0
-          ExplicitWidth = 659
-          ExplicitHeight = 651
           object Panel7: TPanel
             Left = 1
-            Top = 333
+            Top = 292
             Width = 866
             Height = 73
             Align = alBottom
@@ -340,7 +328,6 @@ object frmDashboardChamados: TfrmDashboardChamados
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitLeft = 6
             object Label2: TLabel
               Left = 32
               Top = 20
@@ -404,12 +391,12 @@ object frmDashboardChamados: TfrmDashboardChamados
             Left = 1
             Top = 1
             Width = 866
-            Height = 332
+            Height = 291
             Align = alClient
             DataSource = dsAtendimento
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -48
+            Font.Height = -37
             Font.Name = 'Tahoma'
             Font.Style = []
             Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -424,14 +411,8 @@ object frmDashboardChamados: TfrmDashboardChamados
               item
                 Alignment = taCenter
                 Expanded = False
-                FieldName = 'Nivel'
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -48
-                Font.Name = 'Tahoma'
-                Font.Style = []
+                FieldName = 'Perfil'
                 Title.Alignment = taCenter
-                Title.Caption = 'N'#237'vel'
                 Title.Font.Charset = DEFAULT_CHARSET
                 Title.Font.Color = clWindowText
                 Title.Font.Height = -27
@@ -443,12 +424,19 @@ object frmDashboardChamados: TfrmDashboardChamados
               item
                 Alignment = taCenter
                 Expanded = False
+                FieldName = 'QtdeChamados'
+                Title.Alignment = taCenter
+                Title.Font.Charset = DEFAULT_CHARSET
+                Title.Font.Color = clWindowText
+                Title.Font.Height = -27
+                Title.Font.Name = 'Tahoma'
+                Title.Font.Style = []
+                Visible = True
+              end
+              item
+                Alignment = taCenter
+                Expanded = False
                 FieldName = 'Horas'
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -48
-                Font.Name = 'Tahoma'
-                Font.Style = []
                 Title.Alignment = taCenter
                 Title.Font.Charset = DEFAULT_CHARSET
                 Title.Font.Color = clWindowText
@@ -464,7 +452,7 @@ object frmDashboardChamados: TfrmDashboardChamados
           Left = 1
           Top = 1
           Width = 400
-          Height = 407
+          Height = 366
           AllowPanning = pmNone
           BackWall.Pen.Visible = False
           BottomWall.Brush.Gradient.EndColor = clSilver
@@ -523,9 +511,6 @@ object frmDashboardChamados: TfrmDashboardChamados
           BevelWidth = 2
           Color = clWhite
           TabOrder = 1
-          ExplicitLeft = -4
-          ExplicitTop = -2
-          ExplicitHeight = 651
           DefaultCanvas = 'TGDIPlusCanvas'
           PrintMargins = (
             15
@@ -561,8 +546,42 @@ object frmDashboardChamados: TfrmDashboardChamados
     Align = alBottom
     BevelOuter = bvLowered
     TabOrder = 1
-    ExplicitTop = 372
-    ExplicitWidth = 1069
+  end
+  object Panel8: TPanel
+    Left = 0
+    Top = 0
+    Width = 1278
+    Height = 41
+    Align = alTop
+    BevelOuter = bvLowered
+    TabOrder = 2
+    object Label5: TLabel
+      Left = 416
+      Top = 14
+      Width = 23
+      Height = 13
+      Caption = 'Data'
+    end
+    object edtData: TMaskEdit
+      Left = 445
+      Top = 11
+      Width = 84
+      Height = 21
+      EditMask = '##/##/####'
+      MaxLength = 10
+      TabOrder = 0
+      Text = '  /  /    '
+      OnExit = edtDataExit
+    end
+    object btnPesquisar: TBitBtn
+      Left = 535
+      Top = 10
+      Width = 114
+      Height = 25
+      Caption = '&Pesquisar'
+      TabOrder = 1
+      OnClick = btnPesquisarClick
+    end
   end
   object cdsInicioAtendimento: TClientDataSet
     Aggregates = <>
@@ -606,6 +625,13 @@ object frmDashboardChamados: TfrmDashboardChamados
       FieldName = 'Horas'
       Size = 10
     end
+    object cdsChamadoQtdeChamados: TFloatField
+      FieldName = 'QtdeChamados'
+    end
+    object cdsChamadoPerfil: TStringField
+      FieldName = 'Perfil'
+      Size = 10
+    end
   end
   object cdsAtendimento: TClientDataSet
     Aggregates = <>
@@ -620,6 +646,14 @@ object frmDashboardChamados: TfrmDashboardChamados
     end
     object cdsAtendimentoHoras: TStringField
       FieldName = 'Horas'
+      Size = 10
+    end
+    object cdsAtendimentoQtdeChamados: TFloatField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'QtdeChamados'
+    end
+    object cdsAtendimentoPerfil: TStringField
+      FieldName = 'Perfil'
       Size = 10
     end
   end

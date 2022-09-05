@@ -375,7 +375,7 @@ object frmImagens: TfrmImagens
   end
   object btnFiltro: TBitBtn
     Left = 120
-    Top = 54
+    Top = 59
     Width = 90
     Height = 25
     Caption = '&Filtrar'

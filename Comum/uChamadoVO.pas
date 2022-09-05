@@ -129,18 +129,22 @@ type
   TChamadoTempoMedioVO = class
   private
     FNivel: Integer;
-    FTempo: Double;
+    FTempo: Currency;
     FDataAbertura: TDate;
     FDataOcorrencia: TDate;
     FHoraAbertura: TTime;
     FHoraOcorrencia: TTime;
+    FQtdeChamados: Double;
+    FPerfil: string;
   public
     property Nivel: Integer read FNivel write FNivel;
-    property Tempo: Double read FTempo write FTempo;
+    property QtdeChamados: Double read FQtdeChamados write FQtdeChamados;
+    property Tempo: Currency read FTempo write FTempo;
     property DataAbertura: TDate read FDataAbertura write FDataAbertura;
     property DataOcorrencia: TDate read FDataOcorrencia write FDataOcorrencia;
     property HoraAbertura: TTime read FHoraAbertura write FHoraAbertura;
     property HoraOcorrencia: TTime read FHoraOcorrencia write FHoraOcorrencia;
+    property Perfil: string read FPerfil write FPerfil;
   end;
 
   TListaChamadoTempoMedio = TObjectList<TChamadoTempoMedioVO>;
@@ -150,10 +154,14 @@ type
     FTempo: Double;
     FNivel: Integer;
     FTipo: Integer;
+    FQtdeChamados: Double;
+    FPerfil: string;
   public
     property Nivel: Integer read FNivel write FNivel;
+    property QtdeChamados: Double read FQtdeChamados write FQtdeChamados;
     property Tempo: Double read FTempo write FTempo;
     property Tipo: Integer read FTipo write FTipo;
+    property Perfil: string read FPerfil write FPerfil;
   end;
 
   TListaChamadoTempoMedioViewModel = TObjectList<TChamadoTempoMedioViewModel>;

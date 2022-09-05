@@ -793,10 +793,6 @@
             Caption = 'Itens'
             ImageIndex = 4
             OnShow = tsItensOrcamentoShow
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object Panel14: TPanel
               Left = 0
               Top = 0
@@ -1093,10 +1089,6 @@
           object tsObservacao: TTabSheet
             Caption = 'Observa'#231#245'es'
             ImageIndex = 1
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object Panel8: TPanel
               Left = 0
               Top = 0
@@ -1183,10 +1175,6 @@
           object tsVenctos: TTabSheet
             Caption = 'Vencimentos'
             ImageIndex = 3
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object Panel10: TPanel
               Left = 0
               Top = 0
@@ -1361,10 +1349,6 @@
           object tsOcorrencia: TTabSheet
             Caption = 'Ocorr'#234'ncia'
             ImageIndex = 2
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object Panel9: TPanel
               Left = 0
               Top = 0
